@@ -5,6 +5,8 @@ from library.adjacency_matrix import AdjacencyMatrix
 
 import networkx as nx
 import matplotlib.pyplot as plt
+from texttable import Texttable
+
 
 class Graph(ABC):
     @abstractmethod
@@ -13,6 +15,23 @@ class Graph(ABC):
         self.vertexes = {}
         for i, v in enumerate(self.adjacency_matrix):
             self.vertexes[v] = i + 1
+
+    @abstractmethod
+    def vertex_neighbors(self, vertex_name) -> list[str]:
+        pass
+
+    @abstractmethod
+    def is_chain(self, vertexes_sequence: list[str]) -> bool:
+        pass
+
+    @abstractmethod
+    def vertex_by_weights_sum(self, weight: float) -> list[str]:
+        pass
+
+    @abstractmethod
+    def edges_number(self) -> list[str]:
+        pass
+
 
     @abstractmethod
     def render(self):
@@ -26,6 +45,30 @@ class EdgesListGraph(Graph):
             Edge(out_vertex=v1,in_vertex=v2, weight=matrix[v1][v2]) 
             for v1 in matrix for v2 in matrix[v1] if matrix[v1][v2] > 0
         ]
+
+    def vertex_neighbors(self, vertex_name) -> list[str]:
+        result = []
+        for edge in self.edges:
+            if vertex_name in (edge.in_vertex, edge.out_vertex):
+                result.append(edge.in_vertex if edge.in_vertex != vertex_name else edge.out_vertex)
+        return result
+
+    def is_chain(self, vertexes_sequence: list[str]) -> bool:
+        for i, vertex in enumerate(vertexes_sequence[:-1]):
+            flag = True
+            for egde in self.edges:
+                if egde.out_vertex == vertex and egde.in_vertex == vertexes_sequence[i + 1]:
+                    flag = False
+                    break
+            if flag: return False
+        return True
+
+
+    def vertex_by_weights_sum(self, weight: float) -> list[str]:
+        pass
+
+    def edges_number(self) -> list[str]:
+        pass
 
     def render(self, save=False):
         graph = nx.DiGraph()
@@ -41,13 +84,35 @@ class EdgesListGraph(Graph):
         plt.savefig("graph.png", format="PNG")
     
     def __str__(self):
-        return '\n'.join(map(str, self.edges))
+        table = Texttable()
+        table.set_cols_align(["c", "c"])
+        rows = [['Edge', 'Weight']]
+        for edge in self.edges:
+            rows.append([f"{edge.out_vertex} -> {edge.in_vertex}", f"{edge.weight}"])
+        table.add_rows(rows)
+        return str(table.draw())
 
 
 class AdjacencyMatrixGraph(Graph):
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
         super().__init__(adjacency_matrix)
-        self.__str__adjacency_matrix = adjacency_matrix.__str__   
+        self.__str__adjacency_matrix = adjacency_matrix.__str__
+
+    def vertex_neighbors(self, vertex_name) -> list[str]:
+        m = self.adjacency_matrix
+        return [v for v in m if m[v][vertex_name] > 0 or m[vertex_name][v] > 0]
+
+    def is_chain(self, vertexes_sequence: list[str]) -> bool:
+        for i, vertex in enumerate(vertexes_sequence[:-1]):
+            if self.adjacency_matrix[vertexes_sequence[i + 1]][vertex] != 0:
+                return False
+        return True
+
+    def vertex_by_weights_sum(self, weight: float) -> list[str]:
+        pass
+
+    def edges_number(self) -> list[str]:
+        pass
 
     def render(self):
         pass
@@ -60,7 +125,7 @@ class AdjacencyMatrixGraph(Graph):
 class RecordsArrayGraph(Graph):
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
         super().__init__(adjacency_matrix)
-        self.records = []
+        self.records = {}
         matrix = self.adjacency_matrix
         for vertex in self.vertexes:
             out_edges_weight, in_edges_weight = [], []
@@ -74,20 +139,38 @@ class RecordsArrayGraph(Graph):
                     in_edges_weight.append(matrix[parent][vertex])
                     parents.append(parent)
 
-            self.records.append(Record(
+            self.records[vertex] = Record(
                 vertex=vertex,
                 vertex_number=self.vertexes[vertex],
                 parents=parents,
                 children=children,
                 out_edges_weight=out_edges_weight,
                 in_edges_weight=in_edges_weight
-            ))
+            )
+
+    def vertex_neighbors(self, vertex_name) -> list[str]:
+        return self.records[vertex_name].neighbors
+
+    def is_chain(self, vertexes_sequence: list[str]) -> bool:
+        for i, vertex in enumerate(vertexes_sequence[:-1]):
+            if vertexes_sequence[i + 1] not in self.records[vertex].children:
+                return False
+        return True
+
+    def vertex_by_weights_sum(self, weight: float) -> list[str]:
+        pass
+
+    def edges_number(self) -> list[str]:
+        pass
 
     def render(self):
         pass
 
     def __str__(self) -> str:
-        result = ''
-        for r in self.records:
-            result += f"{r}\n"
-        return result
+        table = Texttable()
+        table.set_cols_align(["c", "c", "r", "l"])
+        rows = [['№', 'Vertex', 'Parents', 'Children']]
+        for record in self.records.values():
+            rows.append([record.vertex_number, record.vertex, record.parents, record.children])
+        table.add_rows(rows)
+        return str(table.draw())

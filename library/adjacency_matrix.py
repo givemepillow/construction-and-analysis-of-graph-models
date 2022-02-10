@@ -5,8 +5,12 @@ from copy import deepcopy
 class AdjacencyMatrix:
     __adjanceny_matrix: OrderedDict[OrderedDict]
 
-    def __init__(self, matrix: list[list], names: list = []):
-        if len(matrix) != sum([len(matrix[i]) for i in range(len(matrix))])/len(matrix):
+    def __init__(self, matrix: list[list], names: list[str] = []):
+        if not (isinstance(matrix, list) and isinstance(matrix[0], list)):
+            raise TypeError("Матрица задаётся списоком списков!")
+        elif not (isinstance(names, list) and (len(names) == 0 or isinstance(names[0], str))):
+            raise TypeError("Имена задаются списком строк!")
+        elif len(matrix) != sum([len(matrix[i]) for i in range(len(matrix))])/len(matrix):
             raise ValueError("Матрица должна быть квадратной!")
         elif len(names) > 0 and (len(matrix) != len(set(names))):
              raise ValueError("Не соответстие вершин!")

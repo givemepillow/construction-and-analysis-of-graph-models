@@ -65,10 +65,15 @@ class EdgesListGraph(Graph):
 
 
     def vertex_by_weights_sum(self, weight: float) -> list[str]:
-        pass
+        sum_w = {}
+        for v in self.vertexes:
+            for edge in self.edges:
+                if v in (edge.in_vertex, edge.out_vertex):
+                    sum_w[v] = edge.weight + sum_w[v] if v in sum_w else edge.weight
+        return [k for k in sum_w if sum_w[k] > weight]
 
     def edges_number(self) -> list[str]:
-        pass
+        return len(self.edges)
 
     def render(self, save=False):
         graph = nx.DiGraph()
@@ -109,10 +114,24 @@ class AdjacencyMatrixGraph(Graph):
         return True
 
     def vertex_by_weights_sum(self, weight: float) -> list[str]:
-        pass
+        sum_w = {}
+        for v in self.vertexes:
+            for other in self.vertexes:
+                if v not in sum_w:
+                    sum_w[v] = 0
+                sum_w[v] += self.adjacency_matrix[v][other]
+                sum_w[v] += self.adjacency_matrix[other][v]
+        return [k for k in sum_w if sum_w[k] > weight]
+
+        
 
     def edges_number(self) -> list[str]:
-        pass
+        number = 0
+        for v1 in self.vertexes:
+            for v2 in self.vertexes:
+                if self.adjacency_matrix[v2][v1] > 0:
+                    number += 1
+        return number
 
     def render(self):
         pass
@@ -158,10 +177,18 @@ class RecordsArrayGraph(Graph):
         return True
 
     def vertex_by_weights_sum(self, weight: float) -> list[str]:
-        pass
+        return [r.vertex for r in self.records.values() if sum(r.incident_edges_weight) > weight]
 
     def edges_number(self) -> list[str]:
-        pass
+        edges = 0
+        _vertexes = []
+        for v1 in self.vertexes:
+            for r in self.records.values():
+                if r.vertex not in _vertexes and v1 in r.neighbors:
+                    edges += 1
+                    _vertexes.append(v1)
+        return edges
+
 
     def render(self):
         pass

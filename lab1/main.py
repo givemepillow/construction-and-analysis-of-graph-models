@@ -1,5 +1,7 @@
 from library import AdjacencyMatrix, RecordsArrayGraph, EdgesListGraph, AdjacencyMatrixGraph
 
+# ВАРИАНТ 10
+
 # [M]  N2  P3  E2  A3  P1  A2  N1  A1 
 #     --------------------------------
 #  N2| 0   2   0   0   0   0   0   0  

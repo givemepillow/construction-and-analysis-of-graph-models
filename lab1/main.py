@@ -125,5 +125,5 @@ graph_egdes.vertex_by_weights_sum(weight=36)
 graph_records.vertex_by_weights_sum(weight=36)
 # ['P3', 'P1']
 
-graph_adjancency.render()
+graph_egdes.render()
 # PICTURE

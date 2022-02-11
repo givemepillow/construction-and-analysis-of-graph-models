@@ -6,15 +6,8 @@ class AdjacencyMatrix:
     __adjanceny_matrix: OrderedDict[OrderedDict]
 
     def __init__(self, matrix: list[list], names: list[str] = []):
-        if not (isinstance(matrix, list) and isinstance(matrix[0], list)):
-            raise TypeError("Матрица задаётся списоком списков!")
-        elif not (isinstance(names, list) and (len(names) == 0 or isinstance(names[0], str))):
-            raise TypeError("Имена задаются списком строк!")
-        elif len(matrix) != sum([len(matrix[i]) for i in range(len(matrix))])/len(matrix):
-            raise ValueError("Матрица должна быть квадратной!")
-        elif len(names) > 0 and (len(matrix) != len(set(names))):
-             raise ValueError("Не соответстие вершин!")
-        names = names if names else range(1, len(matrix) + 1)
+        self.__init_check(matrix, names)
+        names = names if names else map(str, range(1, len(matrix) + 1))
         ad_matrix = OrderedDict()
         for key1, row in zip(names, matrix):
             ad_matrix[key1] = OrderedDict()
@@ -24,6 +17,19 @@ class AdjacencyMatrix:
 
     def get_adjanceny_matrix(self):
         return deepcopy(self.__adjanceny_matrix)
+
+    def __init_check(self, matrix, names):
+        if not isinstance(matrix, list) and all(map(lambda l: isinstance(l, list), matrix)):
+            raise TypeError("Матрица задаётся списоком списков!")
+        elif not (isinstance(names, list) and (len(names) == 0 or all(map(lambda n: isinstance(n, str), names)))):
+            raise TypeError("Имена вершин задаются списком строк!")
+        elif not all([isinstance(x, int) for row in matrix for x in row]):
+            raise TypeError("Значения матрицы должны быть целыми числами!")
+        elif len(matrix) != sum([len(matrix[i]) for i in range(len(matrix))])/len(matrix):
+            raise ValueError("Матрица должна быть квадратной!")
+        elif len(names) > 0 and (len(matrix) != len(set(names))):
+             raise ValueError("Не соответстие вершин!")
+
 
     def __str__(self):
         max_label_len = max([len(str(key)) for key in self.__adjanceny_matrix])

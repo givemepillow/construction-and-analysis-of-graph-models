@@ -32,17 +32,17 @@ class Graph(ABC):
     def edges_number(self) -> list[str]:
         pass
 
-
     @abstractmethod
     def render(self):
         pass
+
 
 class EdgesListGraph(Graph):
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
         super().__init__(adjacency_matrix)
         matrix = self.adjacency_matrix
         self.edges = [
-            Edge(out_vertex=v1,in_vertex=v2, weight=matrix[v1][v2]) 
+            Edge(out_vertex=v1, in_vertex=v2, weight=matrix[v1][v2])
             for v1 in matrix for v2 in matrix[v1] if matrix[v1][v2] > 0
         ]
 
@@ -63,7 +63,6 @@ class EdgesListGraph(Graph):
             if flag: return False
         return True
 
-
     def vertex_by_weights_sum(self, weight: float) -> list[str]:
         sum_w = {}
         for v in self.vertexes:
@@ -79,15 +78,15 @@ class EdgesListGraph(Graph):
         graph = nx.DiGraph()
         graph.add_nodes_from([v for v in self.vertexes])
         graph.add_weighted_edges_from(((e.out_vertex, e.in_vertex, e.weight) for e in self.edges))
-        plt.figure(figsize=(12,12))
+        plt.figure(figsize=(12, 12))
         nx.draw(graph,
-            pos=nx.spring_layout(graph, k=2),
-            node_color='lightgreen',
-            node_size=1000,
-            with_labels=True
-        )
+                pos=nx.spring_layout(graph, k=2),
+                node_color='lightgreen',
+                node_size=1000,
+                with_labels=True
+                )
         plt.savefig("graph.png", format="PNG")
-    
+
     def __str__(self):
         table = Texttable()
         table.set_cols_align(["c", "c"])
@@ -123,8 +122,6 @@ class AdjacencyMatrixGraph(Graph):
                 sum_w[v] += self.adjacency_matrix[other][v]
         return [k for k in sum_w if sum_w[k] > weight]
 
-        
-
     def edges_number(self) -> list[str]:
         number = 0
         for v1 in self.vertexes:
@@ -138,7 +135,6 @@ class AdjacencyMatrixGraph(Graph):
 
     def __str__(self):
         return self.__str__adjacency_matrix()
-
 
 
 class RecordsArrayGraph(Graph):
@@ -188,7 +184,6 @@ class RecordsArrayGraph(Graph):
                     edges += 1
                     _vertexes.append(v1)
         return edges
-
 
     def render(self):
         pass

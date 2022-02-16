@@ -11,7 +11,7 @@ from texttable import Texttable
 class Graph(ABC):
     @abstractmethod
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
-        self.adjacency_matrix = adjacency_matrix.get_adjanceny_matrix()
+        self.adjacency_matrix = adjacency_matrix.get_adjacency_matrix()
         self.vertexes = {}
         for i, v in enumerate(self.adjacency_matrix):
             self.vertexes[v] = i + 1

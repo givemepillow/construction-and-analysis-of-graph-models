@@ -3,7 +3,7 @@ from copy import deepcopy
 
 
 class AdjacencyMatrix:
-    __adjanceny_matrix: OrderedDict[OrderedDict]
+    __adjacency_matrix: OrderedDict[OrderedDict]
 
     def __init__(self, matrix: list[list], names: list[str] = []):
         self.__init_check(matrix, names)
@@ -13,37 +13,37 @@ class AdjacencyMatrix:
             ad_matrix[key1] = OrderedDict()
             for key2, value in zip(names, row):
                 ad_matrix[key1][key2] = value
-        self.__adjanceny_matrix = ad_matrix
+        self.__adjacency_matrix = ad_matrix
 
-    def get_adjanceny_matrix(self):
-        return deepcopy(self.__adjanceny_matrix)
+    def get_adjacency_matrix(self):
+        return deepcopy(self.__adjacency_matrix)
 
-    def __init_check(self, matrix, names):
+    @staticmethod
+    def __init_check(matrix, names):
         if not isinstance(matrix, list) and all(map(lambda l: isinstance(l, list), matrix)):
             raise TypeError("Матрица задаётся списоком списков!")
         elif not (isinstance(names, list) and (len(names) == 0 or all(map(lambda n: isinstance(n, str), names)))):
             raise TypeError("Имена вершин задаются списком строк!")
         elif not all([isinstance(x, int) for row in matrix for x in row]):
             raise TypeError("Значения матрицы должны быть целыми числами!")
-        elif len(matrix) != sum([len(matrix[i]) for i in range(len(matrix))])/len(matrix):
+        elif len(matrix) != sum([len(matrix[i]) for i in range(len(matrix))]) / len(matrix):
             raise ValueError("Матрица должна быть квадратной!")
         elif len(names) > 0 and (len(matrix) != len(set(names))):
-             raise ValueError("Не соответстие вершин!")
-
+            raise ValueError("Не соответстие вершин!")
 
     def __str__(self):
-        max_label_len = max([len(str(key)) for key in self.__adjanceny_matrix])
+        max_label_len = max([len(str(key)) for key in self.__adjacency_matrix])
         max_label_len = 3 if max_label_len < 3 else max_label_len
         result = "[M] " + " " * (max_label_len - 3)
-        for name in self.__adjanceny_matrix.keys():
+        for name in self.__adjacency_matrix.keys():
             result += f"{name}".center(max_label_len, ' ') + ' '
         result += "\n " + " " * max_label_len
-        for name in self.__adjanceny_matrix:
+        for _ in self.__adjacency_matrix:
             result += f"-" * max_label_len + '-'
         result += "\n"
-        for key in self.__adjanceny_matrix:
+        for key in self.__adjacency_matrix:
             result += f"{key}".rjust(max_label_len, ' ') + '|'
-            for value in self.__adjanceny_matrix[key].values():
+            for value in self.__adjacency_matrix[key].values():
                 result += f"{value}".center(max_label_len, ' ') + ' '
             result += "\n"
         return result

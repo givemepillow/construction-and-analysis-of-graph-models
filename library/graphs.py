@@ -108,7 +108,8 @@ class AdjacencyMatrixGraph(Graph):
 
     def is_chain(self, vertexes_sequence: list[str]) -> bool:
         for i, vertex in enumerate(vertexes_sequence[:-1]):
-            if self.adjacency_matrix[vertexes_sequence[i + 1]][vertex] != 0:
+            # Из [vertex] -> в vertexes_sequence[i + 1]
+            if self.adjacency_matrix[vertex][vertexes_sequence[i + 1]] == 0:
                 return False
         return True
 

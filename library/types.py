@@ -2,14 +2,16 @@ from dataclasses import dataclass, field
 
 __all__ = ['Edge', 'Record']
 
+
 @dataclass
 class Edge:
-    out_vertex: str
-    in_vertex: str
+    scr_vertex: str
+    dest_vertex: str
     weight: float
 
     def __str__(self):
-        return f"{self.out_vertex} -> {self.in_vertex}: {self.weight}"
+        return f"{self.scr_vertex} -> {self.dest_vertex}: {self.weight}"
+
 
 @dataclass
 class Record:
@@ -31,6 +33,3 @@ class Record:
         self.children_number = len(self.children)
         self.parents_number = len(self.parents)
         self.neighbors_number = len(self.children) + len(self.parents)
-
-
-

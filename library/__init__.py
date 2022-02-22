@@ -1,2 +1,5 @@
-from .adjacency_matrix import AdjacencyMatrix
-from .graphs import RecordsArrayGraph, EdgesListGraph, AdjacencyMatrixGraph
+from .AdjacencyMatrix import AdjacencyMatrix
+from .RecordsArrayGraph import RecordsArrayGraph
+from .EdgesListGraph import EdgesListGraph
+from .AdjacencyMatrixGraph import AdjacencyMatrixGraph
+from .Graph import Graph

@@ -5,7 +5,7 @@ from copy import deepcopy
 class AdjacencyMatrix:
     __adjacency_matrix: OrderedDict[OrderedDict]
 
-    def __init__(self, matrix: list[list], names: list[str] = []):
+    def __init__(self, matrix: list[list], names: list[str] = None):
         self.__init_check(matrix, names)
         names = names if names else map(str, range(1, len(matrix) + 1))
         ad_matrix = OrderedDict()

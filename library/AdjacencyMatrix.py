@@ -1,16 +1,15 @@
-from collections import OrderedDict
 from copy import deepcopy
 
 
 class AdjacencyMatrix:
-    __adjacency_matrix: OrderedDict[OrderedDict]
+    __adjacency_matrix: {}
 
     def __init__(self, matrix: list[list], names: list[str] = None):
         self.__init_check(matrix, names)
         names = names if names else map(str, range(1, len(matrix) + 1))
-        ad_matrix = OrderedDict()
+        ad_matrix = dict()
         for key1, row in zip(names, matrix):
-            ad_matrix[key1] = OrderedDict()
+            ad_matrix[key1] = dict()
             for key2, value in zip(names, row):
                 ad_matrix[key1][key2] = value
         self.__adjacency_matrix = ad_matrix

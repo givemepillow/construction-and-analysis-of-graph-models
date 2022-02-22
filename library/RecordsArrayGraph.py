@@ -1,3 +1,5 @@
+from pympler.asizeof import asizeof
+
 from texttable import Texttable
 
 from library import AdjacencyMatrix
@@ -9,17 +11,16 @@ class RecordsArrayGraph(Graph):
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
         super().__init__(adjacency_matrix)
         self.records = {}
-        matrix = self.adj_matrix
         for vertex in self.vertexes:
             out_edges_weight, in_edges_weight = [], []
             parents, children = [], []
-            for child in matrix[vertex].items():
+            for child in self.adj_matrix[vertex].items():
                 if child[1] > 0:
                     out_edges_weight.append(child[1])
                     children.append(child[0])
-            for parent in matrix[vertex]:
-                if matrix[parent][vertex] > 0:
-                    in_edges_weight.append(matrix[parent][vertex])
+            for parent in self.adj_matrix[vertex]:
+                if self.adj_matrix[parent][vertex] > 0:
+                    in_edges_weight.append(self.adj_matrix[parent][vertex])
                     parents.append(parent)
 
             self.records[vertex] = Record(
@@ -52,6 +53,9 @@ class RecordsArrayGraph(Graph):
                     edges_number += 1
                     marked.append(v)
         return edges_number
+
+    def size(self) -> bytes:
+        return asizeof(self.records)
 
     def render(self, save=False, show=False):
         pass

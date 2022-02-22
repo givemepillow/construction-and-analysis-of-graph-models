@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+from pympler.asizeof import asizeof
 from texttable import Texttable
 
 from library import AdjacencyMatrix
@@ -44,6 +45,9 @@ class EdgesListGraph(Graph):
 
     def edges_number(self) -> list[str]:
         return len(self.edges)
+
+    def size(self) -> bytes:
+        return asizeof(self.edges)
 
     def render(self, save=False, show=False):
         graph = nx.DiGraph()

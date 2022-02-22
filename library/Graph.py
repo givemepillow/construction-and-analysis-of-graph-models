@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-
 from library.AdjacencyMatrix import AdjacencyMatrix
 
 
@@ -25,9 +24,13 @@ class Graph(ABC):
         pass
 
     @abstractmethod
-    def edges_number(self) -> list[str]:
+    def edges_number(self) -> int:
         pass
 
     @abstractmethod
     def render(self, save=False, show=False):
+        pass
+
+    @abstractmethod
+    def size(self) -> bytes:
         pass

@@ -1,8 +1,11 @@
+from pympler.asizeof import asizeof
+
 from library import AdjacencyMatrix
 from .Graph import Graph
 
 
 class AdjacencyMatrixGraph(Graph):
+
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
         super().__init__(adjacency_matrix)
         self.__str__adjacency_matrix = adjacency_matrix.__str__
@@ -38,3 +41,6 @@ class AdjacencyMatrixGraph(Graph):
 
     def __str__(self):
         return self.__str__adjacency_matrix()
+
+    def size(self) -> bytes:
+        return asizeof(self.adj_matrix)

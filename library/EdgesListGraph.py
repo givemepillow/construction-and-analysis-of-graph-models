@@ -52,14 +52,23 @@ class EdgesListGraph(Graph):
     def render(self, save=False, show=False):
         graph = nx.DiGraph()
         graph.add_nodes_from([v for v in self.vertexes])
-        graph.add_weighted_edges_from(((e.scr_vertex, e.dest_vertex, e.weight) for e in self.edges))
-        plt.figure(figsize=(12, 12))
+        for e in self.edges:
+            graph.add_edge(e.scr_vertex, e.dest_vertex, weight=e.weight)
+        plt.figure(figsize=(5, 5), dpi=200)
+        pos = nx.planar_layout(graph)
         nx.draw(graph,
-                pos=nx.spring_layout(graph, k=2),
+                pos=pos,
                 node_color='lightgreen',
-                node_size=1000,
-                with_labels=True
+                node_size=700,
+                with_labels=True,
+                font_size=15,
+                arrowsize=5
                 )
+        nx.draw_networkx_edge_labels(
+            graph, pos, edge_labels={(e.scr_vertex, e.dest_vertex): e.weight for e in self.edges},
+            font_color='purple',
+            font_size=15
+        )
         if save:
             plt.savefig("graph.png", format="PNG")
         if show:

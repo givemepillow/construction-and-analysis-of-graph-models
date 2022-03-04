@@ -2,68 +2,85 @@ import time_test as tt
 from source import adjacency_graph, records_graph, edges_graph
 
 
-def cli():
-    graph = None
-    test_graph = None
-    prompt1 = "Выберете граф:\n" \
-              "1 - Граф, представленный матрицей смежности.\n" \
-              "2 - Граф, представленный списком рёбер.\n" \
-              "3 - Граф, представленный списком записей\n"
-
-    print(prompt1)
-
-    answer = input("Введите число: ")
-
-    match answer:
-        case '1':
-            graph, test_graph = adjacency_graph, tt.AGraph
-        case '2':
-            graph, test_graph = edges_graph, tt.EGraph
-        case '3':
-            graph, test_graph = records_graph, tt.RGraph
-
-    prompt2 = "Введите, что хотите сделать:\n1 - Вывод всех соседей заданной вершины.\n" \
-              "2 - Ответ, образует ли заданная последовательнсть вершин цепь.\n" \
-              "3 - Вывести номера вершин, сумма весов инцидентных ребер которых больше заданной величины.\n" \
-              "4 - Получить количество рёбер в графе.\n" \
-              "5 - Вывести размер содержашего объекта.\n" \
-              "6 - Оценить время выполнения каждого метода.\n" \
-              "(Для выхода из программы нажмите ввод.)\n"
-
-    print(prompt2)
+def cli(prompt1, prompt2):
+    def run_graph(graph):
+        print(prompt1)
+        while True:
+            match input("Ввод: "):
+                case '0':
+                    print(graph)
+                case '1':
+                    v = input("Введите вершину: ")
+                    print(graph.vertex_neighbors(v))
+                case '2':
+                    seq = input("Введите последовательность вершин через пробел: ")
+                    print('Да' if graph.is_chain(seq.split()) else 'Нет')
+                case '3':
+                    v = input("Введите вес: ")
+                    print(graph.vertex_by_weights_sum(int(v)))
+                case '4':
+                    print("Кол-во рёбер: ", graph.edges_number())
+                case 'exit':
+                    return
 
     while True:
-        answer = input("Введите число: ")
-        match answer:
+        print(prompt2)
+        match input("Ввод: "):
             case '1':
-                v = input("Введите вершину: ")
-                print(graph.vertex_neighbors(v))
+                run_graph(adjacency_graph)
             case '2':
-                seq = input("Введите последовательность вершин через пробел: ")
-                print('Да' if graph.is_chain(seq.split()) else 'Нет')
+                run_graph(edges_graph)
             case '3':
-                v = input("Введите вес: ")
-                print(graph.vertex_by_weights_sum(int(v)))
+                run_graph(records_graph)
             case '4':
-                print("Кол-во рёбер: ", graph.edges_number())
+                test_graphs = tuple(zip(
+                    (tt.AGraph, tt.EGraph, tt.RGraph), ('Матрица смежности', 'Список рёбер', 'Список записей')
+                ))
+                print("Оценка времени выполнения.")
+                print("\nПоиск соседей: ")
+                for g, name in test_graphs:
+                    t = g.vertex_neighbors()
+                    print(f"{name.upper()}: 10^6 раз - {t} сек. Среднее время: {t} мкс.")
+                print("\nСумма инцидентных рёбер: ")
+                for g, name in test_graphs:
+                    t = g.vertex_by_weights_sum()
+                    print(f"{name.upper()}: 10^6 раз - {t} сек. Среднее время: {t} мкс.")
+                print("\nКол-во рёбер: ")
+                for g, name in test_graphs:
+                    t = g.edges_number()
+                    print(f"{name.upper()}: 10^6 раз - {t} сек. Среднее время: {t} мкс.")
+                print("\nПроверка на цепь: ")
+                for g, name in test_graphs:
+                    t = g.is_chain()
+                    print(f"{name.upper()}: 10^6 раз - {t} сек. Среднее время: {t} мкс.")
             case '5':
-                print(f"Размер содержащего обекта {graph.size()} байт.")
-            case '6':
-                print("Оценка времени выполнения.\n")
-                t = test_graph.vertex_neighbors()
-                print(f"Поиск соседей: 10^6 раз - {t} сек. Среднее время: {t} мкс | {t * 1000} мс.")
-                t = test_graph.vertex_by_weights_sum()
-                print(f"Сумма инцидентных рёбер: 10^6 раз - {t} сек. Среднее время: {t} мкс | {t * 1000} мс.")
-                t = test_graph.edges_number()
-                print(f"Кол-во рёбер: 10^6 раз - {t} сек. Среднее время: {t} мкс | {t * 1000} мс.")
-                t = test_graph.is_chain()
-                print(f"Проверка на цепь: 10^6 раз - {t} сек. Среднее время: {t} мкс | {t * 1000} мкс.\n")
-            case _:
-                print("До свидания.")
-                break
+                graphs = zip(
+                    (adjacency_graph, edges_graph, records_graph),
+                    ('Матрица смежности', 'Список рёбер', 'Список записей')
+                )
+                for g, name in graphs:
+                    print(f"{name.upper()}: {g.size()} байт.")
+            case 'exit':
+                return
 
 
-cli()
+cli(
+    prompt1="\nВведите, что хотите сделать:\n"
+            "0 - Отобразить граф.\n"
+            "1 - Вывод всех соседей заданной вершины.\n"
+            "2 - Ответ, образует ли заданная последовательность вершин цепь.\n"
+            "3 - Вывести номера вершин, сумма весов инцидентных ребер которых больше заданной величины.\n"
+            "4 - Получить количество рёбер в графе.\n"
+            "(Для выхода введите - exit.)\n",
+
+    prompt2="\nВыберете граф:\n"
+            "1 - Граф, представленный матрицей смежности.\n"
+            "2 - Граф, представленный списком рёбер.\n"
+            "3 - Граф, представленный списком записей\n"
+            "4 - Оценка времени выполнения.\n"
+            "5 - Размеры содержащего объекта.\n"
+            "(Для выхода введите - exit.)\n"
+)
 
 # print(tt.EGraph.is_chain())
 # print(tt.EGraph.vertex_neighbors())

@@ -36,8 +36,8 @@ class RecordsArrayGraph(Graph):
         return self.records[vertex_name].neighbors
 
     def is_chain(self, vertexes_sequence: list[str]) -> bool:
-        for i, vertex in enumerate(vertexes_sequence[:-1]):
-            if vertexes_sequence[i + 1] not in self.records[vertex].children:
+        for src_vertex, dest_vertex in zip(vertexes_sequence[:-1], vertexes_sequence[1::]):
+            if dest_vertex not in self.records[src_vertex].children:
                 return False
         return True
 
@@ -45,14 +45,7 @@ class RecordsArrayGraph(Graph):
         return [r.vertex for r in self.records.values() if sum(r.incident_edges_weight) > weight]
 
     def edges_number(self) -> int:
-        edges_number = 0
-        marked = []
-        for v in self.vertexes:
-            for record in self.records.values():
-                if record.vertex not in marked and v in record.neighbors:
-                    edges_number += 1
-                    marked.append(v)
-        return edges_number
+        return sum((len(r.children) for r in self.records.values()))
 
     def size(self) -> bytes:
         return asizeof(self.records)
@@ -62,9 +55,15 @@ class RecordsArrayGraph(Graph):
 
     def __str__(self) -> str:
         table = Texttable()
-        table.set_cols_align(["c", "c", "r", "l"])
-        rows = [['№', 'Vertex', 'Parents', 'Children']]
-        for record in self.records.values():
-            rows.append([record.vertex_number, record.vertex, record.parents, record.children])
-        table.add_rows(rows)
-        return str(table.draw())
+        table.set_cols_align(["c", "c", "r", "l", "r", "l"])
+        rows = [['№', 'Vertex', 'Parents', 'Children', "Out weights", "In weights"]]
+        for r in self.records.values():
+            rows.append([
+                r.vertex_number,
+                r.vertex,
+                r.parents,
+                r.children,
+                r.out_edges_weight,
+                r.in_edges_weight
+            ])
+        return str(table.add_rows(rows).draw())

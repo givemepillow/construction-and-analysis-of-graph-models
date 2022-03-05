@@ -6,32 +6,39 @@ def cli(prompt1, prompt2):
     def run_graph(graph):
         print(prompt1)
         while True:
-            match input("Ввод: "):
+            match input("$ "):
                 case '0':
                     print(graph)
                 case '1':
                     v = input("Введите вершину: ")
-                    print(graph.vertex_neighbors(v))
+                    print(graph.vertex_neighbors(v), end='\n\n')
                 case '2':
                     seq = input("Введите последовательность вершин через пробел: ")
-                    print('Да' if graph.is_chain(seq.split()) else 'Нет')
+                    print('Да' if graph.is_chain(seq.split()) else 'Нет', end='\n\n')
                 case '3':
                     v = input("Введите вес: ")
-                    print(graph.vertex_by_weights_sum(int(v)))
+                    print(graph.vertex_by_weights_sum(int(v)), end='\n\n')
                 case '4':
-                    print("Кол-во рёбер: ", graph.edges_number())
+                    print("Кол-во рёбер: ", graph.edges_number(), end='\n\n')
+                case '':
+                    continue
                 case 'exit':
                     return
+                case _:
+                    print(prompt1)
 
+    print(prompt2)
     while True:
-        print(prompt2)
-        match input("Ввод: "):
+        match input("$ "):
             case '1':
                 run_graph(adjacency_graph)
+                print(prompt2)
             case '2':
                 run_graph(edges_graph)
+                print(prompt2)
             case '3':
                 run_graph(records_graph)
+                print(prompt2)
             case '4':
                 test_graphs = tuple(zip(
                     (tt.AGraph, tt.EGraph, tt.RGraph), ('Матрица смежности', 'Список рёбер', 'Список записей')
@@ -53,6 +60,7 @@ def cli(prompt1, prompt2):
                 for g, name in test_graphs:
                     t = g.is_chain()
                     print(f"{name.upper()}: 10^6 раз - {t} сек. Среднее время: {t} мкс.")
+                print()
             case '5':
                 graphs = zip(
                     (adjacency_graph, edges_graph, records_graph),
@@ -60,8 +68,13 @@ def cli(prompt1, prompt2):
                 )
                 for g, name in graphs:
                     print(f"{name.upper()}: {g.size()} байт.")
+                print()
+            case '':
+                continue
             case 'exit':
                 return
+            case _:
+                print(prompt2)
 
 
 cli(

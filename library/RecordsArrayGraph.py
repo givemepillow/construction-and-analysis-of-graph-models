@@ -33,7 +33,7 @@ class RecordsArrayGraph(Graph):
             )
 
     def vertex_neighbors(self, vertex_name) -> list[str]:
-        return self.records[vertex_name].neighbors
+        return self.records[vertex_name].neighbors if vertex_name in self.records else []
 
     def is_chain(self, vertexes_sequence: list[str]) -> bool:
         for src_vertex, dest_vertex in zip(vertexes_sequence[:-1], vertexes_sequence[1::]):

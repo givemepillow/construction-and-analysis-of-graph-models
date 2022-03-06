@@ -18,6 +18,13 @@ class EdgesListGraph(Graph):
         ]
 
     def vertex_neighbors(self, vertex) -> list[str]:
+        """
+        Находит всех соседей в списке смежности,
+        если заданная вершина
+        является родителем или потомком.
+        :param vertex: целевая вершина.
+        :return: список соседей.
+        """
         neighbors = []
         for edge in self.edges:
             if vertex in (edge.dest_vertex, edge.scr_vertex):
@@ -25,6 +32,14 @@ class EdgesListGraph(Graph):
         return neighbors
 
     def is_chain(self, vertexes_sequence: list[str]) -> bool:
+        """
+        Проверяет, является ли заданная последовательность
+        вершин цепью. Если нет пути из предыдущей вершины
+        к следующей, то заданная последовательность
+        вершин цепью не является.
+        :param vertexes_sequence: список вершин - цепь.
+        :return: True | False.
+        """
         for src_vertex, dest_vertex in zip(vertexes_sequence[:-1], vertexes_sequence[1::]):
             flag = True
             for edge in self.edges:
@@ -33,9 +48,22 @@ class EdgesListGraph(Graph):
                     break
             if flag:
                 return False
-        return True if len(vertexes_sequence) == len(set(vertexes_sequence)) else False
+        return True
 
     def vertex_by_weights_sum(self, weight: float) -> list[str]:
+        """
+        Список вершин сумма весов чьих инцидентных
+        рёбер больше заданного веса.
+        Веса для каждой вершины подсчитываются
+        с помощью словаря weights_sum,
+        где ключом является вершина,
+        а значением сумма весов.
+        Ребро находится путём проверки на то
+        является ли выбранная вершина инцидентной ребру.
+        (if v in (edge.dest_vertex, edge.scr_vertex))
+        :param weight: заданный вес.
+        :return: список подходящих вершин.
+        """
         weights_sum = {}
         for v in self.vertexes:
             for edge in self.edges:
@@ -43,7 +71,12 @@ class EdgesListGraph(Graph):
                     weights_sum[v] = (edge.weight + weights_sum[v]) if v in weights_sum else edge.weight
         return [v for v in weights_sum if weights_sum[v] > weight]
 
-    def edges_number(self) -> list[str]:
+    def edges_number(self) -> int:
+        """
+        Подсчитывает количество рёбер путём
+        нахождения длины списка рёбер.
+        :return: число рёбер
+        """
         return len(self.edges)
 
     def size(self) -> bytes:

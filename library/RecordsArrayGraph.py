@@ -32,19 +32,47 @@ class RecordsArrayGraph(Graph):
                 in_edges_weight=in_edges_weight
             )
 
-    def vertex_neighbors(self, vertex_name) -> list[str]:
-        return self.records[vertex_name].neighbors if vertex_name in self.records else []
+    def vertex_neighbors(self, vertex) -> list[str]:
+        """
+        Возвращает соседей указанной вершины из списка записей.
+        :param vertex: целевая вершина.
+        :return: список соседей.
+        """
+        return self.records[vertex].neighbors if vertex in self.records else []
 
     def is_chain(self, vertexes_sequence: list[str]) -> bool:
+        """
+        Проверяет, является ли заданная
+        последовательность вершин цепью.
+        Если следующая вершина
+        не является потомком предыдущей,
+        то заданная последовательность
+        вершин цепью не является.
+        :param vertexes_sequence: список вершин - цепь.
+        :return: True | False.
+        """
         for src_vertex, dest_vertex in zip(vertexes_sequence[:-1], vertexes_sequence[1::]):
             if dest_vertex not in self.records[src_vertex].children:
                 return False
         return True
 
     def vertex_by_weights_sum(self, weight: float) -> list[str]:
+        """
+        Список вершин сумма весов чьих
+        инцидентных рёбер больше заданного веса.
+        Веса для каждой вершины подсчитываются
+        суммированием весов инцидентных рёбер.
+        :param weight: заданный вес.
+        :return: список подходящих вершин.
+        """
         return [r.vertex for r in self.records.values() if sum(r.incident_edges_weight) > weight]
 
     def edges_number(self) -> int:
+        """
+        Подсчитывает количество рёбер путём
+        подсчёта количества детей для каждой вершины.
+        :return: число рёбер
+        """
         return sum((len(r.children) for r in self.records.values()))
 
     def size(self) -> bytes:
@@ -56,14 +84,15 @@ class RecordsArrayGraph(Graph):
     def __str__(self) -> str:
         table = Texttable()
         table.set_cols_align(["c", "c", "r", "l", "r", "l"])
-        rows = [['№', 'Vertex', 'Parents', 'Children', "Out weights", "In weights"]]
+        rows = [['№', 'Vertex', 'Parents', 'Children', "In weights", "Out weights"]]
         for r in self.records.values():
             rows.append([
                 r.vertex_number,
                 r.vertex,
                 r.parents,
                 r.children,
-                r.out_edges_weight,
-                r.in_edges_weight
+                r.in_edges_weight,
+                r.out_edges_weight
+
             ])
         return str(table.add_rows(rows).draw())

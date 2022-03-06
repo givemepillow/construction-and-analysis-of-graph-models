@@ -5,6 +5,11 @@ class AdjacencyMatrix:
     __adjacency_matrix: {}
 
     def __init__(self, matrix: list[list], names: list[str] = None):
+        """
+        Получает список списков и список вершин и создаёт из них словарь словарей.
+        :param matrix: список списков - матрица смежности пользователя.
+        :param names: имена вершин.
+        """
         self.__init_check(matrix, names)
         names = names if names else map(str, range(1, len(matrix) + 1))
         ad_matrix = dict()

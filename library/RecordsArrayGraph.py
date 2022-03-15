@@ -75,6 +75,24 @@ class RecordsArrayGraph(Graph):
         """
         return sum((len(r.children) for r in self.records.values()))
 
+    def max_min_vertex(self):
+        max_vertex = None
+        max_number = 0
+        for r in self.records.values():
+            if len(r.neighbors) > max_number:
+                max_vertex = r.vertex
+                max_number = len(r.neighbors)
+        min_number = max_number
+        result = []
+        for v in self.records[max_vertex].neighbors:
+            if len(self.records[v].neighbors) < min_number:
+                min_number = len(self.records[v].neighbors)
+                result.clear()
+                result.append(v)
+            elif len(self.records[v].neighbors) == min_number:
+                result.append(v)
+        return result
+
     def size(self) -> bytes:
         return asizeof(self.records)
 

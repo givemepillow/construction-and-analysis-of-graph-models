@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 __all__ = ['Edge', 'Record']
 
 
-@dataclass
+@dataclass(frozen=True)
 class Edge:
     scr_vertex: str
     dest_vertex: str

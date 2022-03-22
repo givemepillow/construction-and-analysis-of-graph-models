@@ -17,6 +17,16 @@ class EdgesListGraph(Graph):
             for v1 in matrix for v2 in matrix[v1] if matrix[v1][v2] > 0
         ]
 
+    def mst(self):
+        mst_vertexes = {tuple(self.vertexes)[0]}
+        _edges = set(self.edges)
+        while len(mst_vertexes) != len(self.vertexes):
+            edges = [e for e in _edges if e.scr_vertex in mst_vertexes and e.dest_vertex not in mst_vertexes]
+            min_edge = min(edges, key=lambda edge: edge.weight)
+            _edges.discard(min_edge)
+            mst_vertexes |= {min_edge.scr_vertex, min_edge.dest_vertex}
+        return set(self.edges) - _edges
+
     def vertex_neighbors(self, vertex) -> list[str]:
         """
         Находит всех соседей в списке смежности,
@@ -115,3 +125,19 @@ class EdgesListGraph(Graph):
             rows.append([f"{edge.scr_vertex} -> {edge.dest_vertex}", f"{edge.weight}"])
         table.add_rows(rows)
         return str(table.draw())
+
+
+class EdgesListGraphOnEdges:
+    def __init__(self, edges: list[Edge]):
+        self.vertexes = {}
+        self.edges = edges
+        i = 0
+        for e in edges:
+            self.vertexes[e.scr_vertex] = i
+            self.vertexes[e.dest_vertex] = i
+
+    def render(self, save=False, show=False):
+        return EdgesListGraph.render(self, save, show)
+
+    def __str__(self):
+        return EdgesListGraph.__str__(self)

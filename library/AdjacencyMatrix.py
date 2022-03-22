@@ -4,14 +4,14 @@ from copy import deepcopy
 class AdjacencyMatrix:
     __adjacency_matrix: {}
 
-    def __init__(self, matrix: list[list], names: list[str] = None):
+    def __init__(self, matrix: list[list], names: list[str] | None = None):
         """
         Получает список списков и список вершин и создаёт из них словарь словарей.
         :param matrix: список списков - матрица смежности пользователя.
         :param names: имена вершин.
         """
         self.__init_check(matrix, names)
-        names = names if names else map(str, range(1, len(matrix) + 1))
+        names = names if names else list(map(str, range(0, len(matrix))))
         ad_matrix = dict()
         for key1, row in zip(names, matrix):
             ad_matrix[key1] = dict()
@@ -25,14 +25,12 @@ class AdjacencyMatrix:
     @staticmethod
     def __init_check(matrix, names):
         if not isinstance(matrix, list) and all(map(lambda l: isinstance(l, list), matrix)):
-            raise TypeError("Матрица задаётся списоком списков!")
-        elif not (isinstance(names, list) and (len(names) == 0 or all(map(lambda n: isinstance(n, str), names)))):
-            raise TypeError("Имена вершин задаются списком строк!")
+            raise TypeError("Матрица задаётся списком списков!")
         elif not all([isinstance(x, int) for row in matrix for x in row]):
             raise TypeError("Значения матрицы должны быть целыми числами!")
         elif len(matrix) != sum([len(matrix[i]) for i in range(len(matrix))]) / len(matrix):
             raise ValueError("Матрица должна быть квадратной!")
-        elif len(names) > 0 and (len(matrix) != len(set(names))):
+        elif names and len(names) > 0 and (len(matrix) != len(set(names))):
             raise ValueError("Не соответстие вершин!")
 
     def __str__(self):

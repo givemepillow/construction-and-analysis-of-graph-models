@@ -23,6 +23,17 @@ class AdjacencyMatrix:
         return deepcopy(self.__adjacency_matrix)
 
     @staticmethod
+    def square_grid(size):
+        matrix = []
+        for row in range(size ** 2):
+            matrix.append([])
+            for col in range(size ** 2):
+                matrix[row].append(0)
+                if row - col == size or (row % size != 0 and row - col == 1):
+                    matrix[col][row] = matrix[row][col] = 1
+        return AdjacencyMatrix(matrix)
+
+    @staticmethod
     def __init_check(matrix, names):
         if not isinstance(matrix, list) and all(map(lambda l: isinstance(l, list), matrix)):
             raise TypeError("Матрица задаётся списком списков!")

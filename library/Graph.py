@@ -4,7 +4,6 @@ from library.AdjacencyMatrix import AdjacencyMatrix
 
 
 class Graph(ABC):
-    @abstractmethod
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
         self.adj_matrix = adjacency_matrix.get_adjacency_matrix()
         self.vertexes = {}

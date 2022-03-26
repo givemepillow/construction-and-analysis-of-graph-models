@@ -32,6 +32,10 @@ class EdgesListGraphOnEdges:
     def size(self) -> bytes:
         return EdgesListGraph.size(self)
 
+    @property
+    def weights_sum(self):
+        return sum([e.weight for e in self.edges])
+
     def render(self, save=False, show=False, planar=True, highlights=None):
         return EdgesListGraph.render(self, save, show, planar, highlights)
 
@@ -52,7 +56,7 @@ class EdgesListGraph(Graph):
     def edges(self):
         return set(self._edges)
 
-    def mst(self) -> EdgesListGraphOnEdges:
+    def mst(self, start_node=None) -> EdgesListGraphOnEdges:
         """
         Реализация алгоритма Прима. Здесь используется множество
         вершин дерева (mst_vertexes), пополняемое в ходе составления
@@ -64,10 +68,15 @@ class EdgesListGraph(Graph):
         (in mst_vertexes and e.dest_vertex not in mst_vertexes).
         :return: EdgesListGraphOnEdges - минимальное остовное дерево графа.
         """
-        mst_vertexes = {tuple(self.vertexes)[0]}
+        if start_node:
+            mst_vertexes = {start_node}
+        else:
+            mst_vertexes = {tuple(self.vertexes)[0]}
         _edges = set(self._edges)
         while len(mst_vertexes) != len(self.vertexes):
             edges = [e for e in _edges if e.scr_vertex in mst_vertexes and e.dest_vertex not in mst_vertexes]
+            if not edges:
+                break
             min_edge = min(edges, key=lambda edge: edge.weight)
             _edges.discard(min_edge)
             mst_vertexes |= {min_edge.scr_vertex, min_edge.dest_vertex}

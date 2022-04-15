@@ -46,8 +46,8 @@ class AdjacencyMatrixGraph(Graph):
         :return: список подходящих вершин.
         """
         weights_sum = {}
-        for v1 in self.vertexes:
-            for v2 in self.vertexes:
+        for v1 in self._vertexes:
+            for v2 in self._vertexes:
                 if v1 not in weights_sum:
                     weights_sum[v1] = 0
                 weights_sum[v1] += self.adj_matrix[v1][v2] + self.adj_matrix[v2][v1]
@@ -61,8 +61,8 @@ class AdjacencyMatrixGraph(Graph):
         :return: число рёбер
         """
         number = 0
-        for v1 in self.vertexes:
-            for v2 in self.vertexes:
+        for v1 in self._vertexes:
+            for v2 in self._vertexes:
                 if self.adj_matrix[v2][v1] > 0:
                     number += 1
         return number

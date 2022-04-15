@@ -10,12 +10,12 @@ from .Graph import Graph
 
 class EdgesListGraphOnEdges:
     def __init__(self, edges: list[Edge]):
-        self.vertexes = {}
-        self.edges = edges
+        self._vertexes = {}
+        self._edges = edges
         i = 0
         for e in edges:
-            self.vertexes[e.scr_vertex] = i
-            self.vertexes[e.dest_vertex] = i
+            self._vertexes[e.scr_vertex] = i
+            self._vertexes[e.dest_vertex] = i
 
     def vertex_neighbors(self, vertex_name) -> list[str]:
         return EdgesListGraph.vertex_neighbors(self, vertex_name)
@@ -29,6 +29,9 @@ class EdgesListGraphOnEdges:
     def edges_number(self) -> int:
         return EdgesListGraph.edges_number(self)
 
+    def vertexes_number(self) -> int:
+        return EdgesListGraph.vertexes_number(self)
+
     def size(self) -> bytes:
         return EdgesListGraph.size(self)
 
@@ -36,11 +39,41 @@ class EdgesListGraphOnEdges:
     def weights_sum(self):
         return sum([e.weight for e in self.edges])
 
-    def render(self, save=False, show=False, planar=True, highlights=None):
-        return EdgesListGraph.render(self, save, show, planar, highlights)
+    def render(
+            self,
+            save=False,
+            show=True,
+            planar=True,
+            highlights=None,
+            direct=False,
+            edge_labels=True,
+            font_size=5,
+            arrow_size=4,
+            node_color='lightgreen',
+            node_size=80,
+            font_color='purple'
+    ):
+        return EdgesListGraph.render(
+            self,
+            save,
+            show,
+            planar,
+            highlights,
+            direct,
+            edge_labels,
+            font_size,
+            arrow_size,
+            node_color,
+            node_size,
+            font_color
+        )
 
     def __str__(self):
         return EdgesListGraph.__str__(self)
+
+    @property
+    def vertexes(self):
+        return self._vertexes
 
 
 class EdgesListGraph(Graph):
@@ -71,9 +104,9 @@ class EdgesListGraph(Graph):
         if start_node:
             mst_vertexes = {start_node}
         else:
-            mst_vertexes = {tuple(self.vertexes)[0]}
+            mst_vertexes = {tuple(self._vertexes)[0]}
         _edges = set(self._edges)
-        while len(mst_vertexes) != len(self.vertexes):
+        while len(mst_vertexes) != len(self._vertexes):
             edges = [e for e in _edges if e.scr_vertex in mst_vertexes and e.dest_vertex not in mst_vertexes]
             if not edges:
                 break
@@ -130,7 +163,7 @@ class EdgesListGraph(Graph):
         :return: список подходящих вершин.
         """
         weights_sum = {}
-        for v in self.vertexes:
+        for v in self._vertexes:
             for edge in self._edges:
                 if v in (edge.dest_vertex, edge.scr_vertex):
                     weights_sum[v] = (edge.weight + weights_sum[v]) if v in weights_sum else edge.weight
@@ -144,12 +177,33 @@ class EdgesListGraph(Graph):
         """
         return len(self._edges)
 
+    def vertexes_number(self) -> int:
+        """
+        Подсчитывает количество рёбер путём
+        нахождения длины списка рёбер.
+        :return: число рёбер
+        """
+        return len(self._vertexes)
+
     def size(self) -> bytes:
         return asizeof(self._edges)
 
-    def render(self, save=False, show=False, planar=True, highlights=None):
-        graph = nx.DiGraph()
-        graph.add_nodes_from([v for v in self.vertexes])
+    def render(
+            self,
+            save=False,
+            show=True,
+            planar=True,
+            highlights=None,
+            direct=False,
+            edge_labels=True,
+            font_size=5,
+            arrow_size=4,
+            node_color='lightgreen',
+            node_size=80,
+            font_color='purple'
+    ):
+        graph = nx.DiGraph() if direct else nx.Graph()
+        graph.add_nodes_from([v for v in self._vertexes])
         colors = []
         for e in self._edges:
             if highlights:
@@ -161,25 +215,24 @@ class EdgesListGraph(Graph):
                 colors.append('deepskyblue')
 
         plt.figure(figsize=(5, 5), dpi=200)
-        if planar:
-            pos = nx.planar_layout(graph)
-        else:
-            pos = nx.spring_layout(graph)
+
+        pos = nx.planar_layout(graph) if planar else nx.spring_layout(graph)
 
         nx.draw(graph,
                 pos=pos,
-                node_color='lightgreen',
-                node_size=300,
+                node_color=node_color,
+                node_size=node_size,
                 with_labels=True,
-                font_size=10,
-                arrowsize=5,
+                font_size=font_size,
+                arrowsize=arrow_size,
                 edge_color=colors
                 )
-        nx.draw_networkx_edge_labels(
-            graph, pos, edge_labels={(e.scr_vertex, e.dest_vertex): e.weight for e in self._edges},
-            font_color='purple',
-            font_size=8
-        )
+        if edge_labels:
+            nx.draw_networkx_edge_labels(
+                graph, pos, edge_labels={(e.scr_vertex, e.dest_vertex): e.weight for e in self._edges},
+                font_color=font_color,
+                font_size=font_size
+            )
         if save:
             plt.savefig("graph.png", format="PNG")
         if show:

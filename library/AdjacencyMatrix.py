@@ -4,33 +4,49 @@ from copy import deepcopy
 class AdjacencyMatrix:
     __adjacency_matrix: {}
 
-    def __init__(self, matrix: list[list], names: list[str] | None = None):
+    def __init__(self, matrix: list[list] | dict[dict], names: list[str] | None = None):
         """
         Получает список списков и список вершин и создаёт из них словарь словарей.
         :param matrix: список списков - матрица смежности пользователя.
         :param names: имена вершин.
         """
-        self.__init_check(matrix, names)
-        names = names if names else list(map(str, range(0, len(matrix))))
-        ad_matrix = dict()
-        for key1, row in zip(names, matrix):
-            ad_matrix[key1] = dict()
-            for key2, value in zip(names, row):
-                ad_matrix[key1][key2] = value
-        self.__adjacency_matrix = ad_matrix
+        if isinstance(matrix, dict):
+            self.__adjacency_matrix = matrix
+        else:
+            self.__init_check(matrix, names)
+            names = names if names else list(map(str, range(0, len(matrix))))
+            ad_matrix = dict()
+            for key1, row in zip(names, matrix):
+                ad_matrix[key1] = dict()
+                for key2, value in zip(names, row):
+                    ad_matrix[key1][key2] = value
+            self.__adjacency_matrix = ad_matrix
 
     def get_adjacency_matrix(self):
         return deepcopy(self.__adjacency_matrix)
 
     @staticmethod
     def square_grid(size):
-        matrix = []
-        for row in range(size ** 2):
-            matrix.append([])
-            for col in range(size ** 2):
-                matrix[row].append(0)
-                if row - col == size or (row % size != 0 and row - col == 1):
-                    matrix[col][row] = matrix[row][col] = 1
+        def repl():
+            while True:
+                yield lambda n: n % 2 == 0
+                yield lambda n: n % 2 == 1
+
+        matrix = [[0 for _ in range(size ** 2)] for _ in range(size ** 2)]
+        for v in range(size ** 2):
+            r = v // size
+            c = v % size
+            if c < size:
+                matrix[v][v + 1] =  matrix[v + 1][v] = 1
+            if r < size:
+                matrix[v][v + size] = matrix[v + size][v] = 1
+                if (r % 2 == 0 and c % 2 == 0) or (r % 2 == 0 and c % 2 == 0):
+                    if c > 0:
+                        matrix[v][v+size-1] = matrix[v+size-1][v] = 1
+                    if c < size:
+                        matrix[v][v + size +1] = matrix[v]
+
+
         return AdjacencyMatrix(matrix)
 
     @staticmethod

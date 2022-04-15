@@ -11,7 +11,7 @@ class RecordsArrayGraph(Graph):
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
         super().__init__(adjacency_matrix)
         self.records = {}
-        for vertex in self.vertexes:
+        for vertex in self._vertexes:
             out_edges_weight, in_edges_weight = [], []
             parents, children = [], []
             for child, weight in self.adj_matrix[vertex].items():
@@ -25,7 +25,7 @@ class RecordsArrayGraph(Graph):
 
             self.records[vertex] = Record(
                 vertex=vertex,
-                vertex_number=self.vertexes[vertex],
+                vertex_number=self._vertexes[vertex],
                 parents=parents,
                 children=children,
                 out_edges_weight=out_edges_weight,

@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from pympler.asizeof import asizeof
@@ -200,7 +202,8 @@ class EdgesListGraph(Graph):
             arrow_size=4,
             node_color='lightgreen',
             node_size=80,
-            font_color='purple'
+            font_color='purple',
+            grid=None
     ):
         graph = nx.DiGraph() if direct else nx.Graph()
         graph.add_nodes_from([v for v in self._vertexes])
@@ -217,7 +220,14 @@ class EdgesListGraph(Graph):
         plt.figure(figsize=(5, 5), dpi=200)
 
         pos = nx.planar_layout(graph) if planar else nx.spring_layout(graph)
-
+        if grid:
+            coords = []
+            for x in grid:
+                for y in grid[x]:
+                    if grid[x][y]:
+                        coords.append((x, y))
+            pos = {node: [y, x] for node, (x, y) in zip(pos, coords)}
+        # print(pos)
         nx.draw(graph,
                 pos=pos,
                 node_color=node_color,
@@ -236,6 +246,7 @@ class EdgesListGraph(Graph):
         if save:
             plt.savefig("graph.png", format="PNG")
         if show:
+            plt.gca().invert_yaxis()
             plt.show()
 
     def __str__(self):

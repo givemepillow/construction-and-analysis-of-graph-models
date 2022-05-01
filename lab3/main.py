@@ -143,7 +143,6 @@ def path_existence(column_1, column_2, graph: Graph):
     return False
 
 
-
 P = choice(np.arange(0.05, 1.05, 0.05))
 print(f"{P=}")
 main_grid = make_grid(P, 10)
@@ -159,7 +158,8 @@ g.render(
     edge_labels=False,
     font_size=6,
     node_size=75,
-    arrow_size=4
+    arrow_size=4,
+    grid=main_grid
 )
 exit()
 #

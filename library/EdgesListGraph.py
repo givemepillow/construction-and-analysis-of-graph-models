@@ -79,7 +79,7 @@ class EdgesListGraphOnEdges:
 
 
 class EdgesListGraph(Graph):
-    def __init__(self, adjacency_matrix: AdjacencyMatrix):
+    def __init__(self, adjacency_matrix: AdjacencyMatrix = None):
         super().__init__(adjacency_matrix)
         matrix = self.adj_matrix
         self._edges = [
@@ -90,6 +90,9 @@ class EdgesListGraph(Graph):
     @property
     def edges(self):
         return set(self._edges)
+
+    def add(self, edge: Edge):
+        self._edges.append(edge)
 
     def mst(self, start_node=None) -> EdgesListGraphOnEdges:
         """
@@ -235,7 +238,7 @@ class EdgesListGraph(Graph):
                 with_labels=True,
                 font_size=font_size,
                 arrowsize=arrow_size,
-                edge_color=colors
+                edge_color=colors,
                 )
         if edge_labels:
             nx.draw_networkx_edge_labels(

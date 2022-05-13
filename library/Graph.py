@@ -5,10 +5,14 @@ from library.AdjacencyMatrix import AdjacencyMatrix
 
 class Graph(ABC):
     def __init__(self, adjacency_matrix: AdjacencyMatrix):
-        self.adj_matrix = adjacency_matrix.get_adjacency_matrix()
-        self._vertexes = {}
-        for i, v in enumerate(self.adj_matrix):
-            self._vertexes[v] = i + 1
+        if adjacency_matrix:
+            self.adj_matrix = adjacency_matrix.get_adjacency_matrix()
+            self._vertexes = {}
+            for i, v in enumerate(self.adj_matrix):
+                self._vertexes[v] = i + 1
+        else:
+            self.adj_matrix = {}
+            self._vertexes = {}
 
     def bfs(self, start_node, goal_node):
         visited = set()

@@ -78,19 +78,17 @@ while matrix.size - 1:
     vertex = next(names) if matrix.size != 2 else "(X)"
 
     # Добавляем выбранные вершины в кластерное дерево.
-    graph.add(Edge(v1,
-                   vertex, half if v1 not in distances else half - distances[v1]))
+    graph.add(Edge(v1, vertex, half if v1 not in distances else half - distances[v1]))
     graph.add(Edge(v2, vertex, half if v2 not in distances else half - distances[v2]))
 
-    # Вызов метода обновления матрицы смежности.
     print(f"Новая вершина:  {vertex}")
-    print(f"Добавленные рёбра: "
-          f"{v1}-{vertex}: {half if v1 not in distances else half - distances[v1]} и "
-          f"{v2}-{vertex}: {half if v2 not in distances else half - distances[v2]}"
-          )
-
+    print(
+        f"Добавленные рёбра: "
+        f"{v1}-{vertex}: {half if v1 not in distances else half - distances[v1]} и "
+        f"{v2}-{vertex}: {half if v2 not in distances else half - distances[v2]}"
+    )
+    # Вызов метода обновления матрицы смежности.
     matrix.branch_length_estimation(v1, v2, new_vertex_name=vertex)
     distances[vertex] = half
-
 
 graph.render(show=True, planar=False, node_size=100, node_color='#f1c0e8')

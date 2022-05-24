@@ -27,7 +27,7 @@ class AdjacencyMatrix:
     def branch_length_estimation(self, v1, v2, new_vertex_name):
         new_matrix = self.get_adjacency_matrix()
 
-        # Удаление указанные вершин из матрицы.
+        # Удаление указанных вершин из матрицы.
         del new_matrix[v1]
         del new_matrix[v2]
         for row in new_matrix.values():
